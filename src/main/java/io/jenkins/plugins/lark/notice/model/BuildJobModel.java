@@ -100,7 +100,7 @@ public class BuildJobModel {
             lines.add("---");
         }
         // 添加通用信息
-        Collections.addAll(
+        Collections.addAll(lines,
                 String.format("**项目名称**：[%s](%s)", projectName, projectUrl),
                 String.format("**构建编号**：[%s](%s)", jobName, jobUrl),
                 String.format("**构建状态**：<%s color='%s'>%s</%s>",
@@ -109,7 +109,7 @@ public class BuildJobModel {
                 String.format("**触发用户**：%s", executorName),
                 content == null ? "" : content
         );
-        return String.join(hasDingTask ? "  " + LF : LF);
+        return String.join(hasDingTask ? "  " + LF : LF, lines);
     }
 
     /**
