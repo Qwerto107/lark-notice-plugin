@@ -100,16 +100,16 @@ public class BuildJobModel {
             lines.add("---");
         }
         // 添加通用信息
-        Collections.addAll(lines,
-                String.format("\uD83D\uDCCB **任务名称**: [%s](%s)", projectName, projectUrl),
-                String.format("\uD83D\uDD22 **任务编号**: [%s](%s)", jobName, jobUrl),
-                String.format("\uD83C\uDF1F **构建状态**:  <%s color='%s'>%s</%s>",
+        Collections.addAll(
+                String.format("**项目名称**：[%s](%s)", projectName, projectUrl),
+                String.format("**构建编号**：[%s](%s)", jobName, jobUrl),
+                String.format("**构建状态**：<%s color='%s'>%s</%s>",
                         tagName, statusType.getColor(), statusType.getLabel(), tagName),
-                String.format("\uD83D\uDD50 **构建用时**:  %s", duration),
-                String.format("\uD83D\uDC64 **执  行 者** :  %s", executorName),
+                String.format("**构建用时**：%s", duration),
+                String.format("**触发用户**：%s", executorName),
                 content == null ? "" : content
         );
-        return String.join(hasDingTask ? "  " + LF : LF, lines);
+        return String.join(hasDingTask ? "  " + LF : LF);
     }
 
     /**
