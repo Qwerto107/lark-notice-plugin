@@ -9,6 +9,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static io.jenkins.plugins.lark.notice.enums.MsgTypeEnum.CARD;
 import static io.jenkins.plugins.lark.notice.sdk.constant.Constants.LF;
@@ -84,6 +85,22 @@ public class BuildJobModel {
      */
     private String content;
 
+    /* 自定义环境名称（从 job 名称里取） */
+    private String environment;
+
+    /* 任务描述 */
+    private String description;
+
+    /* 自定义项目分类（从 job 名称里取） */
+    private String piProjectName;
+
+    /* Git 分支 */
+    private String gitBranch;
+    /* Git Commit ID */
+    private String gitCommitId;
+    /* 任务操作类型 */
+    private String jobAction;
+
     /**
      * Converts the build job details into a Markdown formatted string.
      * This is useful for generating readable and formatted messages for notifications or reports.
@@ -99,16 +116,50 @@ public class BuildJobModel {
             lines.add(String.format("## <%s color='%s'>%s</%s>", tagName, statusType.getColor(), title, tagName));
             lines.add("---");
         }
-        // 添加通用信息
-        Collections.addAll(lines,
-                String.format("**项目名称**：[%s](%s)", projectName, projectUrl),
-                String.format("**构建编号**：[%s](%s)", jobName, jobUrl),
-                String.format("**构建状态**：<%s color='%s'>%s</%s>",
-                        tagName, statusType.getColor(), statusType.getLabel(), tagName),
-                String.format("**构建用时**：%s", duration),
-                String.format("**触发用户**：%s", executorName),
-                content == null ? "" : content
-        );
+        // 添加自定义项目环境信息
+        if (projectName.contains("test_fz")) {
+            environment = "测试环境(福州)";
+        } else if (projectName.contains("test_xm")) {
+            environment = "测试环境(厦门)";
+        } else if (projectName.contains("test")) {
+            environment = "测试环境";
+        } else if (projectName.contains("pre")) {
+            environment = "预发环境";
+        } else if (projectName.contains("prod")) {
+            environment = "生产环境";
+        } else {
+            environment = "";
+        }
+        // 处理 git commit id， 只保留 8 位
+        if (gitCommitId == null || gitCommitId.isEmpty()) {
+            gitCommitId = "null";
+        } else {
+            gitCommitId = gitCommitId.substring(0, Math.min(gitCommitId.length(), 8));
+        }
+
+        if (Objects.equals(duration, "Not started yet")) {
+            Collections.addAll(lines,
+                    String.format("工程名称：[%s](%s) - [%s](%s)", projectName, projectUrl, jobName, jobUrl),
+                    String.format("发布环境：%s - %s", piProjectName, environment),
+                    String.format("构建分支：%s  (%s)", gitBranch, jobAction),
+                    String.format("当前状态：<%s color='%s'>%s</%s>",
+                            tagName, statusType.getColor(), statusType.getLabel(), tagName),
+                    String.format("触发用户：%s", executorName),
+                    content == null ? "" : content
+            );
+        } else {
+            Collections.addAll(lines,
+                    String.format("工程名称：[%s](%s) - [%s](%s)", projectName, projectUrl, jobName, jobUrl),
+                    String.format("发布环境：%s - %s", piProjectName, environment),
+                    String.format("构建分支：%s [%s]  (%s)", gitBranch, gitCommitId, jobAction),
+                    String.format("当前状态：<%s color='%s'>%s</%s>",
+                            tagName, statusType.getColor(), statusType.getLabel(), tagName),
+                    String.format("构建用时：%s", duration),
+                    String.format("触发用户：%s", executorName),
+                    /*String.format("构建描述：%s", description),*/
+                    content == null ? "" : content
+            );
+        }
         return String.join(hasDingTask ? "  " + LF : LF, lines);
     }
 

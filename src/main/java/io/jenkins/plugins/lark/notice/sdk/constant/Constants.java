@@ -14,12 +14,12 @@ public final class Constants {
     /**
      * Default title for the message, incorporating a notice icon and a prefix indicating it's a Jenkins build notification.
      */
-    public static final String DEFAULT_TITLE = "\uD83D\uDCE2 Jenkins 构建通知";
+    public static final String DEFAULT_TITLE = "Jenkins 构建通知";
 
     /**
      * Represents a Unicode string for a notification symbol.
      */
-    public static final String NOTICE_ICON = "\uD83D\uDCE2";
+    public static final String NOTICE_ICON = "";
 
     /**
      * String constant: Line Feed {@code "\n"}

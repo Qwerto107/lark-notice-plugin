@@ -54,20 +54,20 @@ public class LarkCardMessage extends BaseLarkMessage {
             elements.add(hr);
             elements.add(topImg);
         }
-        elements.add(hr);
+        //elements.add(hr);
         elements.add(mdContent);
         if (Objects.nonNull(bottomImg)) {
             elements.add(hr);
             elements.add(bottomImg);
         }
-        elements.add(hr);
+        //elements.add(hr);
 
-        if (!CollectionUtils.isEmpty(buttons)) {
-            Map<String, Object> actions = new HashMap<>(8);
-            actions.put("actions", buttons);
-            actions.put("tag", "action");
-            elements.add(actions);
-        }
+        //if (!CollectionUtils.isEmpty(buttons)) {
+        //    Map<String, Object> actions = new HashMap<>(8);
+        //    actions.put("actions", buttons);
+        //    actions.put("tag", "action");
+        //    elements.add(actions);
+        //}
 
         card.setElements(JsonUtils.valueToTree(elements));
 

@@ -26,6 +26,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.logging.Level;
 
 import static io.jenkins.plugins.lark.notice.sdk.constant.Constants.DEFAULT_TITLE;
 import static io.jenkins.plugins.lark.notice.sdk.constant.Constants.LF;
@@ -105,9 +106,11 @@ public class LarkRunListener extends RunListener<Run<?, ?>> {
         // 构建任务信息
         BuildJobModel buildJobModel = BuildJobModel.builder()
                 // 项目信息
-                .projectName(job.getFullDisplayName()).projectUrl(job.getAbsoluteUrl())
+                .projectName(job.getFullDisplayName())
+                .projectUrl(job.getAbsoluteUrl())
                 // 构建信息
                 .jobName(run.getDisplayName()).jobUrl(rootPath + run.getUrl()).duration(run.getDurationString())
+                .description(StringUtils.defaultIfBlank(run.getDescription(), ""))
                 // 执行人信息
                 .executorName(user.getName()).executorMobile(user.getMobile()).executorOpenId(user.getOpenId())
                 // 构建状态
@@ -115,6 +118,13 @@ public class LarkRunListener extends RunListener<Run<?, ?>> {
 
         // 获取并更新环境变量
         EnvVars envVars = fetchUpdateEnvVariables(run, listener, buildJobModel);
+        // 获取 Git 分支
+        buildJobModel.setGitBranch(envVars.get("DEPLOYER_BRANCH_TAG"));
+        // 获取 Git Commit ID（自定义）
+        buildJobModel.setGitCommitId(envVars.get("GIT_COMMIT_ID"));
+        // 自定义变量 Job 操作
+        buildJobModel.setJobAction(envVars.get("ACTION"));
+
 
         // 遍历所有可用的通知器配置
         property.getAvailableNotifierConfigs().stream()
@@ -178,6 +188,7 @@ public class LarkRunListener extends RunListener<Run<?, ?>> {
         envVars.put("EXECUTOR_MOBILE", StringUtils.defaultIfBlank(buildJobModel.getExecutorMobile(), ""));
         envVars.put("EXECUTOR_OPENID", StringUtils.defaultIfBlank(buildJobModel.getExecutorOpenId(), ""));
         envVars.put("PROJECT_NAME", buildJobModel.getProjectName());
+        envVars.put("PROJECT_DESC", buildJobModel.getDescription());
         envVars.put("PROJECT_URL", buildJobModel.getProjectUrl());
         envVars.put("JOB_NAME", buildJobModel.getJobName());
         envVars.put("JOB_URL", buildJobModel.getJobUrl());
