@@ -96,8 +96,10 @@ public class BuildJobModel {
 
     /* Git 分支 */
     private String gitBranch;
+    
     /* Git Commit ID */
     private String gitCommitId;
+
     /* 任务操作类型 */
     private String jobAction;
 
@@ -118,15 +120,15 @@ public class BuildJobModel {
         }
         // 添加自定义项目环境信息
         if (projectName.contains("test_fz")) {
-            environment = "测试环境(福州)";
+            environment = "<font color='green'>测试环境(福州)</font>";
         } else if (projectName.contains("test_xm")) {
-            environment = "测试环境(厦门)";
+            environment = "<font color='green'>测试环境(厦门)</font>";
         } else if (projectName.contains("test")) {
-            environment = "测试环境";
+            environment = "<font color='green'>测试环境</font>";
         } else if (projectName.contains("pre")) {
-            environment = "预发环境";
+            environment = "<font color='orange'>预发环境</font>";
         } else if (projectName.contains("prod")) {
-            environment = "生产环境";
+            environment = "<font color='carmine'>生产环境</font>";
         } else {
             environment = "";
         }
@@ -140,8 +142,8 @@ public class BuildJobModel {
         if (Objects.equals(duration, "Not started yet")) {
             Collections.addAll(lines,
                     String.format("工程名称：[%s](%s) - [%s](%s)", projectName, projectUrl, jobName, jobUrl),
-                    String.format("发布环境：%s - %s", piProjectName, environment),
-                    String.format("构建分支：%s  (%s)", gitBranch, jobAction),
+                    String.format("发布环境：%s / %s", piProjectName, environment),
+                    String.format("构建分支：%s <text_tag color='yellow'> %s </text_tag>", gitBranch, jobAction),
                     String.format("当前状态：<%s color='%s'>%s</%s>",
                             tagName, statusType.getColor(), statusType.getLabel(), tagName),
                     String.format("触发用户：%s", executorName),
@@ -150,8 +152,8 @@ public class BuildJobModel {
         } else {
             Collections.addAll(lines,
                     String.format("工程名称：[%s](%s) - [%s](%s)", projectName, projectUrl, jobName, jobUrl),
-                    String.format("发布环境：%s - %s", piProjectName, environment),
-                    String.format("构建分支：%s [%s]  (%s)", gitBranch, gitCommitId, jobAction),
+                    String.format("发布环境：%s / %s", piProjectName, environment),
+                    String.format("构建分支：%s <text_tag color='wathet'> %s </text_tag> <text_tag color='yellow'> %s </text_tag>", gitBranch, gitCommitId, jobAction),
                     String.format("当前状态：<%s color='%s'>%s</%s>",
                             tagName, statusType.getColor(), statusType.getLabel(), tagName),
                     String.format("构建用时：%s", duration),
